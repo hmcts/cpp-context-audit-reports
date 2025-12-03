@@ -19,17 +19,17 @@ management:
 system:
   id:
     mapper:
-      baseUrl: https://steccm90.ingress01.dev.nl.cjscp.org.uk
+      baseUrl: http://localhost:8080
       cjscppuid: ${CJSCPPUID:}
 
 user:
   service:
-    baseUrl: https://steccm90.ingress01.dev.nl.cjscp.org.uk
+    baseUrl: http://localhost:8080
     cjscppuid: ${CJSCPPUID:}
 
 progression:
   service:
-    baseUrl: https://steccm90.ingress01.dev.nl.cjscp.org.uk
+    baseUrl: http://localhost:8080
     cjscppuid: ${CJSCPPUID:}
 
 springdoc:
