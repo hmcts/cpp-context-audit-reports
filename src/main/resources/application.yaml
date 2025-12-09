@@ -42,5 +42,13 @@ spring:
     name: Audit Bff Application
 
 azure:
+  fabric:
+    workspace-id: ${FABRIC_WORKSPACE_ID}
+    pipeline-id: ${FABRIC_PIPELINE_ID}
+    pipeline-name: "Param Test"
+    tenant-id: ${AZURE_TENANT_ID}
+    fabric-base-url: "https://api.fabric.microsoft.com/v1"
+    connection-timeout: 10000
+    read-timeout: 30000
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
