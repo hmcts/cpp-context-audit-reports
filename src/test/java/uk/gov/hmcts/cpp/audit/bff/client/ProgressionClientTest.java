@@ -24,7 +24,7 @@ class ProgressionClientTest {
     void setUp() {
         restTemplate = new RestTemplate();
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        progressionClient = new ProgressionClient(restTemplate, "http://localhost:8080", "test-user");
+        progressionClient = new ProgressionClient(restTemplate, "http://localhost:8080", "test-user", "/progression", "application/json");
     }
 
     @Test

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.hmcts.cpp.audit.bff.model.SystemIdMapper;
+import uk.gov.hmcts.cpp.audit.bff.model.CaseIdMapper;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-class SystemIdMapperClientTest {
+class CaseIdMapperClientTest {
 
     private SystemIdMapperClient client;
     private MockRestServiceServer mockServer;
@@ -22,7 +22,7 @@ class SystemIdMapperClientTest {
     void setUp() {
         RestTemplate restTemplate = new RestTemplate();
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        client = new SystemIdMapperClient(restTemplate, "http://localhost:8080", "test-user-id");
+        client = new SystemIdMapperClient(restTemplate, "http://localhost:8080", "test-user-id", "/system-id-mappers", "application/json");
     }
 
     @Test
@@ -52,7 +52,7 @@ class SystemIdMapperClientTest {
                            .header("CPPCLIENTCORRELATIONID", correlationId))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        List<SystemIdMapper> result = client.getMappingsByCaseUrns("CaseURNID01,CaseURNID02", "TFL", correlationId);
+        List<CaseIdMapper> result = client.getMappingsByCaseUrns("CaseURNID01,CaseURNID02", "TFL", correlationId);
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).caseId()).isEqualTo("100c0ae9-e276-4d29-b669-cb32013228b1");
@@ -88,7 +88,7 @@ class SystemIdMapperClientTest {
                            .header("CPPCLIENTCORRELATIONID", correlationId))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        List<SystemIdMapper> result = client.getMappingsByCaseIds("100c0ae9-e276-4d29-b669-cb32013228b1,"
+        List<CaseIdMapper> result = client.getMappingsByCaseIds("100c0ae9-e276-4d29-b669-cb32013228b1,"
             + "100c0ae9-e276-4d29-b669-cb32013228b2", "TFL", correlationId);
 
         assertThat(result).hasSize(2);

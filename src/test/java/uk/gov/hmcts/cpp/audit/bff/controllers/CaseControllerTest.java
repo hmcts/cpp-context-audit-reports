@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
-import uk.gov.hmcts.cpp.audit.bff.model.SystemIdMapper;
+import uk.gov.hmcts.cpp.audit.bff.model.CaseIdMapper;
 import uk.gov.hmcts.cpp.audit.bff.service.CaseService;
 
 import java.util.Collections;
@@ -37,14 +37,14 @@ class CaseControllerTest {
     void shouldReturnSystemIdMappersWhenUrnsFound() {
         String caseUrns = "urn1,urn2";
         String correlationId = "corr-123";
-        List<SystemIdMapper> mappers = List.of(
-            new SystemIdMapper("urn1", "id1", "CASE_ID"),
-            new SystemIdMapper("urn2", "id2", "CASE_ID")
+        List<CaseIdMapper> mappers = List.of(
+            new CaseIdMapper("urn1", "id1", "CASE_ID"),
+            new CaseIdMapper("urn2", "id2", "CASE_ID")
         );
 
         when(caseService.getCaseIdByUrn(caseUrns, correlationId)).thenReturn(mappers);
 
-        ResponseEntity<List<SystemIdMapper>> response = caseController.getCaseId(caseUrns, correlationId);
+        ResponseEntity<List<CaseIdMapper>> response = caseController.getCaseId(caseUrns, correlationId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);
@@ -71,14 +71,14 @@ class CaseControllerTest {
     void shouldReturnSystemIdMappersWhenIdsFound() {
         String caseIds = "id1,id2";
         String correlationId = "corr-123";
-        List<SystemIdMapper> mappers = List.of(
-            new SystemIdMapper("urn1", "id1", "CASE_ID"),
-            new SystemIdMapper("urn2", "id2", "CASE_ID")
+        List<CaseIdMapper> mappers = List.of(
+            new CaseIdMapper("urn1", "id1", "CASE_ID"),
+            new CaseIdMapper("urn2", "id2", "CASE_ID")
         );
 
         when(caseService.getCaseUrnByCaseId(caseIds, correlationId)).thenReturn(mappers);
 
-        ResponseEntity<List<SystemIdMapper>> response = caseController.getCaseUrn(caseIds, correlationId);
+        ResponseEntity<List<CaseIdMapper>> response = caseController.getCaseUrn(caseIds, correlationId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);

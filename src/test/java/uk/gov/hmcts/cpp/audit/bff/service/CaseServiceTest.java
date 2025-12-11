@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.cpp.audit.bff.client.SystemIdMapperClient;
-import uk.gov.hmcts.cpp.audit.bff.model.SystemIdMapper;
+import uk.gov.hmcts.cpp.audit.bff.model.CaseIdMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,15 +32,15 @@ class CaseServiceTest {
     void shouldReturnMappersWhenUrnsAreProvided() {
         String caseUrns = "urn1,urn2";
         String correlationId = "corr-123";
-        List<SystemIdMapper> expectedMappers = List.of(
-            new SystemIdMapper("urn1", "id1", "CASE_ID"),
-            new SystemIdMapper("urn2", "id2", "CASE_ID")
+        List<CaseIdMapper> expectedMappers = List.of(
+            new CaseIdMapper("urn1", "id1", "CASE_ID"),
+            new CaseIdMapper("urn2", "id2", "CASE_ID")
         );
 
         when(systemIdMapperClient.getMappingsByCaseUrns(caseUrns, "CASE_ID", correlationId))
             .thenReturn(expectedMappers);
 
-        List<SystemIdMapper> result = caseService.getCaseIdByUrn(caseUrns, correlationId);
+        List<CaseIdMapper> result = caseService.getCaseIdByUrn(caseUrns, correlationId);
 
         assertThat(result).hasSize(2);
         assertThat(result).isEqualTo(expectedMappers);
@@ -55,7 +55,7 @@ class CaseServiceTest {
         when(systemIdMapperClient.getMappingsByCaseUrns(caseUrns, "CASE_ID", correlationId))
             .thenReturn(Collections.emptyList());
 
-        List<SystemIdMapper> result = caseService.getCaseIdByUrn(caseUrns, correlationId);
+        List<CaseIdMapper> result = caseService.getCaseIdByUrn(caseUrns, correlationId);
 
         assertThat(result).isEmpty();
         verify(systemIdMapperClient).getMappingsByCaseUrns(caseUrns, "CASE_ID", correlationId);
@@ -65,15 +65,15 @@ class CaseServiceTest {
     void shouldReturnMappersWhenCaseIdsAreProvided() {
         String caseIds = "id1,id2";
         String correlationId = "corr-123";
-        List<SystemIdMapper> expectedMappers = List.of(
-            new SystemIdMapper("urn1", "id1", "CASE_ID"),
-            new SystemIdMapper("urn2", "id2", "CASE_ID")
+        List<CaseIdMapper> expectedMappers = List.of(
+            new CaseIdMapper("urn1", "id1", "CASE_ID"),
+            new CaseIdMapper("urn2", "id2", "CASE_ID")
         );
 
         when(systemIdMapperClient.getMappingsByCaseIds(caseIds, "CASE_ID", correlationId))
             .thenReturn(expectedMappers);
 
-        List<SystemIdMapper> result = caseService.getCaseUrnByCaseId(caseIds, correlationId);
+        List<CaseIdMapper> result = caseService.getCaseUrnByCaseId(caseIds, correlationId);
 
         assertThat(result).hasSize(2);
         assertThat(result).isEqualTo(expectedMappers);
@@ -88,7 +88,7 @@ class CaseServiceTest {
         when(systemIdMapperClient.getMappingsByCaseIds(caseIds, "CASE_ID", correlationId))
             .thenReturn(Collections.emptyList());
 
-        List<SystemIdMapper> result = caseService.getCaseUrnByCaseId(caseIds, correlationId);
+        List<CaseIdMapper> result = caseService.getCaseUrnByCaseId(caseIds, correlationId);
 
         assertThat(result).isEmpty();
         verify(systemIdMapperClient).getMappingsByCaseIds(caseIds, "CASE_ID", correlationId);

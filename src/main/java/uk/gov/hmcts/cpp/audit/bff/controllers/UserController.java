@@ -22,11 +22,13 @@ import uk.gov.hmcts.cpp.audit.bff.service.UserService;
 
 import java.util.List;
 
+import static uk.gov.hmcts.cpp.audit.bff.constants.HeaderConstants.HEADER_CORRELATION_ID;
+
 @RestController
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-    private static final String HEADER_CORR = "CPPCLIENTCORRELATIONID";
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -46,7 +48,7 @@ public class UserController {
         @Parameter(description = "Email addresses of the users (comma separated)", required = true)
         @RequestParam("emails") String emails,
         @Parameter(description = "Correlation ID for tracking the request", required = true)
-        @RequestHeader(HEADER_CORR) String correlationId) {
+        @RequestHeader(HEADER_CORRELATION_ID) String correlationId) {
         LOGGER.info("Fetching users for emails: {} with correlationId: {}", emails, correlationId);
         List<User> users = userService.getUsersByEmails(emails, correlationId);
         if (users.isEmpty()) {
@@ -71,7 +73,7 @@ public class UserController {
         @Parameter(description = "User IDs of the users (comma separated)", required = true)
         @RequestParam("userIds") String userIds,
         @Parameter(description = "Correlation ID for tracking the request", required = true)
-        @RequestHeader(HEADER_CORR) String correlationId) {
+        @RequestHeader(HEADER_CORRELATION_ID) String correlationId) {
         LOGGER.info("Fetching users for IDs: {} with correlationId: {}", userIds, correlationId);
         List<User> users = userService.getEmailByUserId(userIds, correlationId);
         if (users.isEmpty()) {

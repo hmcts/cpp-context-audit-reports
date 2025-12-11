@@ -16,21 +16,22 @@ management:
       exposure:
         include: health, info, prometheus
 
-system:
-  id:
-    mapper:
-      baseUrl: https://steccm90.ingress01.dev.nl.cjscp.org.uk
-      cjscppuid: ${CJSCPPUID:}
-
-user:
-  service:
-    baseUrl: https://steccm90.ingress01.dev.nl.cjscp.org.uk
-    cjscppuid: ${CJSCPPUID:}
-
-progression:
-  service:
-    baseUrl: https://steccm90.ingress01.dev.nl.cjscp.org.uk
-    cjscppuid: ${CJSCPPUID:}
+cqrs:
+  client:
+    base-url: ${CPP_CAR_URL:http://localhost:8080}
+    connect-timeout-ms: ${CPP_CAR_CQRS_CONNECTION_TIMEOUT_MS:3000}
+    read-timeout-ms: ${CPP_CAR_CQRS_READ_TIMEOUT_MS:15000}
+    headers:
+      cjs-cppuid: ${CPP_CAR_CJSCPPUID_HEADER:CJSCPPUID}
+    progression:
+      accept-header: "application/vnd.progression.query.material-bulk+json"
+      material-path: "/progression-query-api/query/api/rest/progression/materials/cases"
+    user-groups:
+      accept-header: "application/vnd.usersgroups.search-users+json"
+      user-group-path: "/usersgroups-query-api/query/api/rest/usersgroups/users"
+    system-id-mappers:
+      accept-header: "application/vnd.systemid.mappings+json"
+      system-id-path: "/system-id-mapper-api/rest/systemid/mappings/bulk"
 
 springdoc:
   packagesToScan: uk.gov.hmcts.cpp.audit.bff.controllers

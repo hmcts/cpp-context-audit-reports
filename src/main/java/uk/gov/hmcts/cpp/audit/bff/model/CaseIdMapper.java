@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record SystemIdMapper(
+public record CaseIdMapper(
     @JsonAlias("sourceId") String caseUrn,
     @JsonAlias("targetId") String caseId,
     String targetType

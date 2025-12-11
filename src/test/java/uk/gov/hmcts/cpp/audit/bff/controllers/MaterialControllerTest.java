@@ -20,16 +20,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ProgressionControllerTest {
+class MaterialControllerTest {
 
     @Mock
     private ProgressionService progressionService;
 
-    private ProgressionController progressionController;
+    private MaterialController materialController;
 
     @BeforeEach
     void setUp() {
-        progressionController = new ProgressionController(progressionService);
+        materialController = new MaterialController(progressionService);
     }
 
     @Test
@@ -43,7 +43,7 @@ class ProgressionControllerTest {
 
         when(progressionService.getMaterialCase(materialIds, correlationId)).thenReturn(materialCases);
 
-        ResponseEntity<List<MaterialCase>> response = progressionController.getMaterial(materialIds, correlationId);
+        ResponseEntity<List<MaterialCase>> response = materialController.getMaterial(materialIds, correlationId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);
@@ -59,7 +59,7 @@ class ProgressionControllerTest {
 
         when(progressionService.getMaterialCase(materialIds, correlationId)).thenReturn(materialCases);
 
-        ResponseEntity<List<MaterialCase>> response = progressionController.getMaterial(materialIds, correlationId);
+        ResponseEntity<List<MaterialCase>> response = materialController.getMaterial(materialIds, correlationId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(1);
@@ -74,7 +74,7 @@ class ProgressionControllerTest {
 
         when(progressionService.getMaterialCase(materialIds, correlationId)).thenReturn(Collections.emptyList());
 
-        assertThatThrownBy(() -> progressionController.getMaterial(materialIds, correlationId))
+        assertThatThrownBy(() -> materialController.getMaterial(materialIds, correlationId))
             .isInstanceOf(ResponseStatusException.class)
             .hasFieldOrPropertyWithValue("status", HttpStatus.NOT_FOUND)
             .hasMessageContaining("No Material Cases found for the provided Material IDs");

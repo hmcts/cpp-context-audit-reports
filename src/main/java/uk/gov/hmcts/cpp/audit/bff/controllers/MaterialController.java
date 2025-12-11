@@ -22,14 +22,16 @@ import uk.gov.hmcts.cpp.audit.bff.service.ProgressionService;
 
 import java.util.List;
 
-@RestController
-public class ProgressionController {
+import static uk.gov.hmcts.cpp.audit.bff.constants.HeaderConstants.HEADER_CORRELATION_ID;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProgressionController.class);
-    private static final String HEADER_CORR = "CPPCLIENTCORRELATIONID";
+@RestController
+public class MaterialController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaterialController.class);
+
     private final ProgressionService progressionService;
 
-    public ProgressionController(ProgressionService progressionService) {
+    public MaterialController(ProgressionService progressionService) {
         this.progressionService = progressionService;
     }
 
@@ -48,7 +50,7 @@ public class ProgressionController {
         @Parameter(description = "Material IDs (comma separated)", required = true)
         @RequestParam("materialIds") String materialIds,
         @Parameter(description = "Correlation ID for tracking the request", required = true)
-        @RequestHeader(HEADER_CORR) String correlationId) {
+        @RequestHeader(HEADER_CORRELATION_ID) String correlationId) {
         LOGGER.info("Fetching Material Cases for IDs: {} with correlationId: {}", materialIds, correlationId);
         List<MaterialCase> materialCases = progressionService.getMaterialCase(materialIds, correlationId);
 

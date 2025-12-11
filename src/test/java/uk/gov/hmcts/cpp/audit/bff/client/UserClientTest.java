@@ -22,7 +22,7 @@ class UserClientTest {
     void setUp() {
         RestTemplate restTemplate = new RestTemplate();
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        userClient = new UserClient(restTemplate, "http://localhost:8080", "test-user");
+        userClient = new UserClient(restTemplate, "http://localhost:8080", "test-user", "/users", "application/json");
     }
 
     @Test

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.cpp.audit.bff.client.SystemIdMapperClient;
-import uk.gov.hmcts.cpp.audit.bff.model.SystemIdMapper;
+import uk.gov.hmcts.cpp.audit.bff.model.CaseIdMapper;
 
 import java.util.List;
 
@@ -19,28 +19,18 @@ public class CaseService {
         this.systemIdMapperClient = systemIdMapperClient;
     }
 
-    public List<SystemIdMapper> getCaseIdByUrn(String caseUrns, String correlationId) {
+    public List<CaseIdMapper> getCaseIdByUrn(String caseUrns, String correlationId) {
         LOGGER.info("Requesting Case IDs for URNs: {} from SystemIdMapperClient", caseUrns);
-        try {
-            List<SystemIdMapper> result = systemIdMapperClient
-                .getMappingsByCaseUrns(caseUrns, "CASE_ID", correlationId);
-            LOGGER.debug("Received {} mappings for URNs: {}", result.size(), caseUrns);
-            return result;
-        } catch (Exception e) {
-            LOGGER.error("Error fetching Case IDs for URNs: {} with correlationId: {}", caseUrns, correlationId, e);
-            throw e;
-        }
+        List<CaseIdMapper> result = systemIdMapperClient
+            .getMappingsByCaseUrns(caseUrns, "CASE_ID", correlationId);
+        LOGGER.debug("Received {} mappings for URNs: {}", result.size(), caseUrns);
+        return result;
     }
 
-    public List<SystemIdMapper> getCaseUrnByCaseId(String caseIds, String correlationId) {
+    public List<CaseIdMapper> getCaseUrnByCaseId(String caseIds, String correlationId) {
         LOGGER.info("Requesting Case URNs for IDs: {} from SystemIdMapperClient", caseIds);
-        try {
-            List<SystemIdMapper> result = systemIdMapperClient.getMappingsByCaseIds(caseIds, "CASE_ID", correlationId);
-            LOGGER.debug("Received {} mappings for IDs: {}", result.size(), caseIds);
-            return result;
-        } catch (Exception e) {
-            LOGGER.error("Error fetching Case URNs for IDs: {} with correlationId: {}", caseIds, correlationId, e);
-            throw e;
-        }
+        List<CaseIdMapper> result = systemIdMapperClient.getMappingsByCaseIds(caseIds, "CASE_ID", correlationId);
+        LOGGER.debug("Received {} mappings for IDs: {}", result.size(), caseIds);
+        return result;
     }
 }

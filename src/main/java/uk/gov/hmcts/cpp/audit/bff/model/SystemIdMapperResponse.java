@@ -4,4 +4,4 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record SystemIdMapperResponse(List<SystemIdMapper> systemIds) {}
+public record SystemIdMapperResponse(List<CaseIdMapper> systemIds) {}
