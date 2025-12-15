@@ -79,4 +79,151 @@ class ProgressionClientTest {
         assertThat(actualCases).isEmpty();
         mockServer.verify();
     }
+
+    @Test
+    void shouldHandleMaterialCasesWithPartialNullFields() {
+        String responseJson = """
+            {
+              "materialIds": [
+                {
+                  "materialId": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+                  "courtDocumentId": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+                  "caseId": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+                  "caseUrn": "39GD1116822"
+                },
+                {
+                  "materialId": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+                  "courtDocumentId": null,
+                  "caseId": "a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d",
+                  "caseUrn": "TFL122222"
+                },
+                {
+                  "materialId": "b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e",
+                  "courtDocumentId": "c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3f",
+                  "caseId": null,
+                  "caseUrn": null
+                }
+              ]
+            }
+            """;
+
+        mockServer.expect(requestTo(org.hamcrest.Matchers
+                                        .containsString("materialIds=a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d,"
+                                        + "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c,b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e")))
+            .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        List<MaterialCase> actualCases = progressionClient.getMaterialCases("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d,"
+                           + "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c,b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e", "corr-id");
+
+        assertThat(actualCases).hasSize(3);
+        assertThat(actualCases.get(0))
+            .hasFieldOrPropertyWithValue("materialId", "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
+            .hasFieldOrPropertyWithValue("courtDocumentId", "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
+            .hasFieldOrPropertyWithValue("caseUrn", "39GD1116822");
+
+        assertThat(actualCases.get(1))
+            .hasFieldOrPropertyWithValue("courtDocumentId", null)
+            .hasFieldOrPropertyWithValue("caseUrn", "TFL122222");
+
+        assertThat(actualCases.get(2))
+            .hasFieldOrPropertyWithValue("caseId", null)
+            .hasFieldOrPropertyWithValue("caseUrn", null);
+
+        mockServer.verify();
+    }
+
+    @Test
+    void shouldReturnSingleMaterialCase() {
+        String responseJson = """
+            {
+              "materialIds": [
+                {
+                  "materialId": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+                  "courtDocumentId": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+                  "caseId": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+                  "caseUrn": "39GD1116822"
+                }
+              ]
+            }
+            """;
+
+        mockServer.expect(requestTo(org.hamcrest.Matchers
+                                        .containsString("materialIds=a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")))
+            .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        List<MaterialCase> actualCases = progressionClient
+            .getMaterialCases("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d", "corr-id");
+
+        assertThat(actualCases).hasSize(1);
+        assertThat(actualCases.get(0).materialId()).isEqualTo("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d");
+        assertThat(actualCases.get(0).caseUrn()).isEqualTo("39GD1116822");
+        mockServer.verify();
+    }
+
+    @Test
+    void shouldVerifyCorrelationIdIsPassedInHeaders() {
+        String responseJson = """
+            {
+              "materialIds": []
+            }
+            """;
+        String correlationId = "test-correlation-id-12345";
+
+        mockServer.expect(requestTo(org.hamcrest.Matchers.containsString("materialIds=test-id")))
+            .andExpect(org.springframework.test.web.client.match.MockRestRequestMatchers
+                           .header("CPPCLIENTCORRELATIONID", correlationId))
+            .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        progressionClient.getMaterialCases("test-id", correlationId);
+
+        mockServer.verify();
+    }
+
+    @Test
+    void shouldReturnMaterialCasesWithAllFieldsPopulated() {
+        String responseJson = """
+            {
+              "materialIds": [
+                {
+                  "materialId": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+                  "courtDocumentId": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+                  "caseId": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+                  "caseUrn": "39GD1116822"
+                }
+              ]
+            }
+            """;
+
+        mockServer.expect(requestTo(org.hamcrest.Matchers
+                                        .containsString("materialIds=a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")))
+            .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        List<MaterialCase> actualCases = progressionClient
+            .getMaterialCases("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d", "corr-id");
+
+        assertThat(actualCases).hasSize(1);
+        MaterialCase materialCase = actualCases.get(0);
+        assertThat(materialCase.materialId()).isEqualTo("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d");
+        assertThat(materialCase.courtDocumentId()).isEqualTo("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e");
+        assertThat(materialCase.caseId()).isEqualTo("c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f");
+        assertThat(materialCase.caseUrn()).isEqualTo("39GD1116822");
+        mockServer.verify();
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenMaterialIdsArrayIsEmpty() {
+        String responseJson = """
+            {
+              "materialIds": []
+            }
+            """;
+
+        mockServer.expect(requestTo(org.hamcrest.Matchers.containsString("materialIds=empty-id")))
+            .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        List<MaterialCase> actualCases = progressionClient.getMaterialCases("empty-id", "corr-id");
+
+        assertThat(actualCases).isEmpty();
+        mockServer.verify();
+    }
 }
