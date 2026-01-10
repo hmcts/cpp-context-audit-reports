@@ -16,36 +16,30 @@ management:
       exposure:
         include: health, info, prometheus
 
+cqrs:
+  client:
+    base-url: ${CPP_CAR_URL:http://localhost:8080}
+    connect-timeout-ms: ${CPP_CAR_CQRS_CONNECTION_TIMEOUT_MS:3000}
+    read-timeout-ms: ${CPP_CAR_CQRS_READ_TIMEOUT_MS:15000}
+    headers:
+      cjs-cppuid: ${CPP_CAR_CJSCPPUID_HEADER:CJSCPPUID}
+    progression:
+      accept-header: "application/vnd.progression.query.material-bulk+json"
+      material-path: "/progression-query-api/query/api/rest/progression/materials/cases"
+    user-groups:
+      accept-header: "application/vnd.usersgroups.search-users+json"
+      user-group-path: "/usersgroups-query-api/query/api/rest/usersgroups/users"
+    system-id-mappers:
+      accept-header: "application/vnd.systemid.mappings+json"
+      system-id-path: "/system-id-mapper-api/rest/systemid/mappings/bulk"
+
 springdoc:
-  packagesToScan: uk.gov.hmcts.reform.demo.controllers
+  packagesToScan: uk.gov.hmcts.cpp.audit.bff.controllers
   writer-with-order-by-keys: true
 
 spring:
-  config:
-    import: "optional:configtree:/mnt/secrets/rpe/"
   application:
-    name: Spring Boot Template
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_OPTIONS:}
-#    username: ${DB_USER_NAME}
-#    password: ${DB_PASSWORD}
-#    properties:
-#      charSet: UTF-8
-#    hikari:
-#      minimumIdle: 2
-#      maximumPoolSize: 10
-#      idleTimeout: 10000
-#      poolName: {to-be-defined}HikariCP
-#      maxLifetime: 7200000
-#      connectionTimeout: 30000
-#  jpa:
-#    properties:
-#      hibernate:
-#        jdbc:
-#          lob:
-#            # silence the 'wall-of-text' - unnecessary exception throw about blob types
-#            non_contextual_creation: true
+    name: Audit Bff Application
 
 azure:
   application-insights:
